@@ -12,6 +12,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Newtonsoft.Json.Serialization;
+using BalanceAPI.Context;
+using Microsoft.EntityFrameworkCore;
+using BalanceAPI.Interfaces;
+using BalanceAPI.Data;
 
 namespace BalanceAPI
 {
@@ -30,7 +34,11 @@ namespace BalanceAPI
             //Enable CORS
             services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); ; });
 
+           // services.AddSingleton<IOperation, OperationData>();
+
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BalanceAPI")));
 
             services.AddControllersWithViews();
         }
